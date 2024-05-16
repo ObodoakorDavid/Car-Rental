@@ -20,10 +20,15 @@ const isAuth = async (req, res, next) => {
 
     next();
   } catch (error) {
-    if (error.message === "jwt expired") {
+    if (error instanceof jwt.TokenExpiredError) {
       return next(customError(401, "Token Expired"));
     }
-    return next(customError(401, "Invalid Token"));
+
+    if (error instanceof jwt.JsonWebTokenError) {
+      return next(customError(401, "Invalid Token"));
+    }
+
+    return next(customError(500, "Internal Server Error"));
   }
 };
 

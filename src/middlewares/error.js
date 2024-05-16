@@ -48,7 +48,7 @@ const errorMiddleware = (err, req, res, next) => {
   }
 
   console.error(err.message); // Logging the error for debugging
-  //   console.error(err.stack); // Logging the error for debugging
+  // console.error(err.stack); // Logging the error for debugging
 
   res.status(statusCode).json({ message: errorMessage });
 };

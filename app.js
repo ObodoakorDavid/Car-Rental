@@ -4,14 +4,19 @@ import morgan from "morgan";
 import cors from "cors";
 import fileUpload from "express-fileupload";
 
-//
+// Configs
 import connectDB from "./src/config/connectDB.js";
+
+//Middleware Imports
+import { isAdmin, isAuth } from "./src/middlewares/auth.js";
 import notFound from "./src/middlewares/notFound.js";
 import errorMiddleware from "./src/middlewares/error.js";
 
-//RouteS Imports
+//Routes Imports
 import authRoutes from "./src/routes/authRoutes.js";
 import carRoutes from "./src/routes/carRoutes.js";
+import bookingRoutes from "./src/routes/bookingRoutes.js";
+import adminRoutes from "./src/routes/adminRoutes.js";
 
 // Configure Dotenv
 dotenv.config();
@@ -37,7 +42,11 @@ if (process.env.NODE_ENV === "dev") {
 
 //Routes
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/car", carRoutes);
+app.use("/api/v1/car", isAuth, carRoutes);
+app.use("/api/v1/booking", isAuth, bookingRoutes);
+
+// Admin Routes
+app.use("/api/v1/admin", isAuth, isAdmin, adminRoutes);
 
 //Middlewares
 app.use(notFound);

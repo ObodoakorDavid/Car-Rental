@@ -9,6 +9,9 @@ import OTP from "../models/otp.js";
 import generateOTP from "../utils/generateOTP.js";
 import { formatDate } from "./dateUtils.js";
 
+import env from "dotenv";
+env.config();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const templatePath = join(__dirname, "..", "templates", "OTPTemplate.html");
@@ -76,5 +79,33 @@ const sendOTPByEmail = async (email, userName) => {
     html,
   });
 };
+
+// import twilio from "twilio";
+
+// const client = twilio(
+//   process.env.TWILIO_ACCOUNTSID,
+//   process.env.TWILIO_AUTHTOKEN
+// );
+
+// // Function to send OTP by SMS
+// const sendOTPBySMS = async (email, userName) => {
+//   // Delete any existing otp with the user email
+//   await OTP.findOneAndDelete({ email });
+
+//   // Generate new OTP
+//   const otp = generateOTP();
+
+//   //Add new OTP To DB
+//   await OTP.create({ email, otp });
+
+//   const message = await client.messages.create({
+//     body: `Your OTP IS ${otp}. Testing Whatsapp OTP`,
+//     from: "whatsapp:+14155238886",
+//     to: "whatsapp:+2348182921822",
+//   });
+
+//   console.log(message.sid);
+//   return message;
+// };
 
 export default { sendEmail, sendOTPByEmail };

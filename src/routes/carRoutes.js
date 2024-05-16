@@ -1,22 +1,11 @@
 import express from "express";
 import methodNotAllowed from "../utils/methodNotAllowed.js";
 
-import {
-  createCar,
-  deleteCar,
-  getCar,
-  getCars,
-  updateCar,
-} from "../controllers/carController.js";
+import { getCar, getCars } from "../controllers/carController.js";
 
 const router = express.Router();
 
-router.route("/").get(getCars).post(createCar).all(methodNotAllowed);
-router
-  .route("/:carId")
-  .get(getCar)
-  .patch(updateCar)
-  .delete(deleteCar)
-  .all(methodNotAllowed);
+router.route("/").get(getCars).all(methodNotAllowed);
+router.route("/:carId").get(getCar).all(methodNotAllowed);
 
 export default router;

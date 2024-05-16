@@ -97,9 +97,26 @@ async function findUserProfileById(userId) {
   return userProfile;
 }
 
+// update user
+async function updateUser(userId, newDetails) {
+  const userProfile = await UserProfile.findOneAndUpdate(
+    { userId },
+    { ...newDetails },
+    {
+      new: true,
+    }
+  );
+
+  if (!userProfile) {
+    throw customError(404, "User profile not found");
+  }
+  return userProfile;
+}
+
 export default {
   register,
   findUserByEmail,
   findUserProfileById,
   signIn,
+  updateUser,
 };

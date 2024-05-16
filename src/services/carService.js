@@ -4,9 +4,29 @@ import { validateMongoId } from "../utils/validationUtils.js";
 import uploadService from "./uploadService.js";
 
 // Get All Cars
-async function getAllCars() {
-  const cars = await Car.find({});
-  return cars;
+async function getAllCars(query) {
+  if (!query) {
+    const cars = await Car.find({});
+    return { cars };
+  }
+
+  let totalCountQuery = await Car.find({}).countDocuments();
+
+  const pagination = {
+    totalPages: 0,
+    totalCount: totalCountQuery,
+  };
+
+  const { page, pageSize } = query;
+  const limit = pageSize ? parseInt(pageSize) : 0;
+  const requestedPage = page ? parseInt(page) : 1;
+  const skip = limit * (requestedPage - 1);
+
+  pagination.totalPages = Math.ceil(totalCountQuery / limit);
+
+  const cars = await Car.find().skip(skip).limit(limit);
+
+  return { cars, pagination };
 }
 
 // Get Single Car
@@ -45,11 +65,35 @@ async function updateCar(carId, carDetails) {
 
 // Adds New Car
 async function addNewCar(carDetails, allImages) {
+  const requiredFields = [
+    "brand",
+    "model",
+    "transmisson",
+    "passengers",
+    "color",
+    "topSpeed",
+    "maxPower",
+    "pricePerDay",
+  ];
+
+  const missingField = requiredFields.find((field) => !(field in carDetails));
+  if (missingField) {
+    throw customError(400, `${missingField} is required!`);
+  }
+
   if (!allImages) {
     throw customError(400, "Please provide coverImage and images");
   }
 
   const { coverImage, images } = allImages;
+
+  if (!coverImage) {
+    throw customError(400, "Please provide coverImage");
+  }
+
+  if (!images) {
+    throw customError(400, "Please provide images");
+  }
 
   if (coverImage) {
     carDetails.coverImage = await uploadService.uploadImageToCloudinary(
@@ -64,26 +108,11 @@ async function addNewCar(carDetails, allImages) {
         url: await uploadService.uploadImageToCloudinary(image.tempFilePath),
       });
     }
+  } else {
+    carDetails.images.push({
+      url: await uploadService.uploadImageToCloudinary(images.tempFilePath),
+    });
   }
-
-  const requiredFields = [
-    "brand",
-    "model",
-    "transmisson",
-    "passengers",
-    "color",
-    "topSpeed",
-    "maxPower",
-    "coverImage",
-    "images",
-  ];
-
-  const missingField = requiredFields.find((field) => !(field in carDetails));
-  if (missingField) {
-    throw customError(400, `${missingField} is required!`);
-  }
-
-  console.log(carDetails);
 
   const newCar = await Car.create({ ...carDetails });
   return newCar;

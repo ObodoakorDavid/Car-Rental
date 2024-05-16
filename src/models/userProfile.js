@@ -38,6 +38,15 @@ const UserProfileSchema = new Schema(
       minlength: [11, "NIN Invalid"],
       maxLength: [11, "NIN Invalid"],
     },
+    booking: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "booking",
+        },
+      ],
+      default: [],
+    },
   },
   {
     timestamps: true,
