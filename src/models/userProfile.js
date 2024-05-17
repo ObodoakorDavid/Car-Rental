@@ -20,7 +20,7 @@ const UserProfileSchema = new Schema(
     },
     roles: {
       type: [String],
-      enum: ["user", "admin"],
+      enum: ["user", "admin", "driver"],
       default: ["user"],
     },
     isVerified: {

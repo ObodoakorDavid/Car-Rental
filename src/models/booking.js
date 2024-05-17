@@ -41,11 +41,21 @@ const bookingSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    driver: {
+      type: mongoose.Types.ObjectId,
+      ref: "Driver",
+    },
     totalPrice: {
       type: Number,
       default: 0,
       min: 0,
       required: true,
+    },
+    datePicked: {
+      type: Date,
+    },
+    dateReturned: {
+      type: Date,
     },
     paymentStatus: {
       type: String,

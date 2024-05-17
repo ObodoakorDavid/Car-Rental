@@ -15,7 +15,8 @@ const errorMiddleware = (err, req, res, next) => {
         field === "lastName" ||
         field === "nin" ||
         field === "phoneNumber" ||
-        field === "password"
+        field === "password" ||
+        field === "status"
       ) {
         errorMessage = err.errors[field].message;
         statusCode = 400;
@@ -23,27 +24,25 @@ const errorMiddleware = (err, req, res, next) => {
     });
 
     // Handling Mongoose CastError for fare
-    const { fare } = err.errors;
-    if (fare && fare.name === "CastError") {
-      errorMessage = "fare should be a number";
-      statusCode = 400;
-    }
+    // const { fare } = err.errors;
+    // if (fare && fare.name === "CastError") {
+    //   errorMessage = "fare should be a number";
+    //   statusCode = 400;
+    // }
   }
 
   //   console.log(err.message);
 
   // Handling MongoDB duplicate key error
   if (err.code === 11000) {
-    const { email, phoneNumber, plateNumber } = err.keyValue;
+    const { email, phoneNumber } = err.keyValue;
     if (email) {
       errorMessage = "User with this email already exists";
     }
     if (phoneNumber) {
       errorMessage = "User with this phone number already exists";
     }
-    if (plateNumber) {
-      errorMessage = "Plate number already taken";
-    }
+
     statusCode = 400;
   }
 
