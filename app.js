@@ -16,6 +16,7 @@ import errorMiddleware from "./src/middlewares/error.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import carRoutes from "./src/routes/carRoutes.js";
 import bookingRoutes from "./src/routes/bookingRoutes.js";
+import driverRoutes from "./src/routes/driverRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
 
 // Configure Dotenv
@@ -44,6 +45,7 @@ if (process.env.NODE_ENV === "dev") {
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/car", isAuth, carRoutes);
 app.use("/api/v1/booking", isAuth, bookingRoutes);
+app.use("/api/v1/driver", isAuth, driverRoutes);
 
 // Admin Routes
 app.use("/api/v1/admin", isAuth, isAdmin, adminRoutes);

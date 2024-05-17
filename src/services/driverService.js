@@ -3,6 +3,7 @@ import customError from "../utils/customError.js";
 import { validateMongoId } from "../utils/validationUtils.js";
 import uploadService from "./uploadService.js";
 
+// Add New Driver
 async function addNewDriver(driverDetails, images) {
   const requiredFields = [
     "firstName",
@@ -37,11 +38,51 @@ async function addNewDriver(driverDetails, images) {
   return { message: "Driver Added", driver };
 }
 
-async function getAllDrivers() {
-  const drivers = await Driver.find({});
+//GET All Drivers
+async function getAllDrivers(query = {}) {
+  console.log(query);
+  const { search, page, perPage = 10, yearsOfExperience } = query;
+
+  const searchQuery = {};
+  if (search) {
+    searchQuery.$or = [
+      { firstName: { $regex: search, $options: "i" } },
+      { lastName: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  const pagination = {
+    totalPages: 0,
+    totalCount: 0,
+  };
+
+  if (yearsOfExperience) {
+    const [minExperience, maxExperience] = yearsOfExperience
+      .split("-")
+      .map(Number);
+
+    searchQuery.yearsOfExperience = {
+      $gte: minExperience,
+      $lte: maxExperience,
+    };
+  }
+
+  if (page) {
+    const skip = page ? (page - 1) * perPage : 0;
+    const drivers = await Driver.find(searchQuery).skip(skip).limit(perPage);
+
+    const totalCount = await Driver.countDocuments(searchQuery);
+    const totalPages = Math.ceil(totalCount / perPage);
+    pagination.totalCount = totalCount;
+    pagination.totalPages = totalPages;
+    return { drivers, pagination };
+  }
+
+  const drivers = await Driver.find(searchQuery);
   return { drivers };
 }
 
+// Get Driver
 async function getDriver(driverId) {
   validateMongoId(driverId);
   const driver = await Driver.findById(driverId);
