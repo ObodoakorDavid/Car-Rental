@@ -52,7 +52,7 @@ async function bookCar(bookingDetails, userId) {
   return { message: "Booking Successfull", booking: carBooking };
 }
 
-// Get All Bookings
+// Get All Car Bookings
 async function getAllCarBookings(query = {}) {
   const { status, page, perPage } = query;
 
@@ -77,7 +77,13 @@ async function getAllCarBookings(query = {}) {
     const totalPages = Math.ceil(totalCount / perPage);
     pagination.totalCount = totalCount;
     pagination.totalPages = !totalPages ? 0 : totalPages;
-    return { bookings: carBookings, pagination };
+    const stats = await getCarBookingsStatistics();
+    console.log(stats);
+    return {
+      bookings: carBookings,
+      pagination,
+      ...stats,
+    };
   }
 
   const carBookings = await CarBooking.find(searchQuery);
@@ -101,7 +107,7 @@ async function getSingleCarBooking(bookingId) {
   return { booking: carBooking };
 }
 
-// Update User Bookings
+// Update User Car Bookings
 const STATUS = {
   PENDING: "pending",
   APPROVED: "Approved",
@@ -155,6 +161,67 @@ async function updateCarBooking(bookingId, updatedDetails = {}) {
   }
 
   return { message: "Booking Updated", booking: updatedCarBooking };
+}
+
+// Booking Statistics
+async function getCarBookingsStatistics() {
+  const currentDate = new Date();
+
+  const calculateStatistics = async (startDate, endDate, timeFrame) => {
+    const bookings = await CarBooking.find({
+      createdAt: { $gte: startDate, $lt: endDate },
+    });
+
+    const statistics = Array.from({ length: timeFrame }, () => 0);
+    bookings.forEach((booking) => {
+      const interval = Math.floor(
+        (booking.createdAt - startDate) / (1000 * 60 * 60)
+      ); // Interval in hours
+      statistics[interval]++;
+    });
+
+    return statistics;
+  };
+
+  // Daily Statistics
+  const startOfToday = new Date(currentDate);
+  startOfToday.setHours(0, 0, 0, 0);
+  const endOfToday = new Date(startOfToday);
+  endOfToday.setDate(endOfToday.getDate() + 1);
+
+  const dailyStatistics = await calculateStatistics(
+    startOfToday,
+    endOfToday,
+    1
+  );
+
+  // Weekly Statistics
+  const startOfWeek = new Date(currentDate);
+  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
+  const weeklyStatistics = await calculateStatistics(
+    startOfWeek,
+    new Date(startOfWeek.getTime() + 7 * 24 * 60 * 60 * 1000),
+    7
+  );
+
+  // Monthly Statistics
+  const startOfMonth = new Date(currentDate);
+  startOfMonth.setDate(1);
+
+  const endOfMonth = new Date(
+    startOfMonth.getFullYear(),
+    startOfMonth.getMonth() + 1,
+    12
+  );
+
+  const monthlyStatistics = await calculateStatistics(startOfMonth, endOfMonth);
+
+  return {
+    daily: dailyStatistics,
+    weekly: weeklyStatistics,
+    monthly: monthlyStatistics,
+  };
 }
 
 // ----------------------------------------------------------------------
