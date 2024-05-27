@@ -19,6 +19,7 @@ async function addNewDriver(driverDetails, images) {
   if (missingField) {
     throw customError(400, `${missingField} is required!`);
   }
+  console.log(images);
 
   if (!images) {
     throw customError(400, "Please provide an avatar");
@@ -69,7 +70,10 @@ async function getAllDrivers(query = {}) {
 
   if (page) {
     const skip = page ? (page - 1) * perPage : 0;
-    const drivers = await Driver.find(searchQuery).skip(skip).limit(perPage);
+    const drivers = await Driver.find(searchQuery)
+      .skip(skip)
+      .limit(perPage)
+      .populate("bookings");
 
     const totalCount = await Driver.countDocuments(searchQuery);
     const totalPages = Math.ceil(totalCount / perPage);
@@ -78,7 +82,7 @@ async function getAllDrivers(query = {}) {
     return { drivers, pagination };
   }
 
-  const drivers = await Driver.find(searchQuery);
+  const drivers = await Driver.find(searchQuery).populate("bookings");
   return { drivers };
 }
 
@@ -89,11 +93,48 @@ async function getDriver(driverId) {
   if (!driver) {
     throw customError(404, "Driver Not Found");
   }
-  return driver;
+  return { driver };
+}
+
+async function updateDriver(driverId, updatedDetails) {
+  validateMongoId(driverId);
+  const driver = await Driver.findByIdAndUpdate(
+    driverId,
+    {
+      ...updatedDetails,
+    },
+    { new: true, runValidators: true }
+  );
+  if (!driver) {
+    throw customError(404, "Driver Not Found");
+  }
+
+  return { driver };
+}
+
+// Get Driver
+async function deleteDriver(driverId) {
+  validateMongoId(driverId);
+  const driver = await Driver.findByIdAndDelete(driverId);
+  if (!driver) {
+    throw customError(404, "Driver Not Found");
+  }
+  return { message: "Driver Deleted", driver };
+}
+
+// Check Driver Availability
+async function checkDriverAvailability(driverId) {
+  const { driver } = await getDriver(driverId);
+  if (!driver.isAvailable) {
+    throw customError(400, "This driver is not available");
+  }
 }
 
 export default {
   addNewDriver,
   getAllDrivers,
   getDriver,
+  updateDriver,
+  deleteDriver,
+  checkDriverAvailability,
 };

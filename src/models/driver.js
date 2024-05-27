@@ -31,15 +31,16 @@ const driverSchema = new Schema(
       type: Number,
       required: true,
     },
-    isAvailble: {
+    isAvailable: {
       type: Boolean,
-      default: false,
+      default: true,
     },
-    trips: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
+    bookings: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "DriverBooking",
+      },
+    ],
   },
   {
     timestamps: true,

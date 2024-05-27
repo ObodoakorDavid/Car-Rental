@@ -2,16 +2,22 @@ import express from "express";
 import methodNotAllowed from "../utils/methodNotAllowed.js";
 import {
   addDriver,
-  bookCar,
   createCar,
   deleteCar,
+  deleteDriver,
   getAllDrivers,
-  getBookings,
   getCar,
+  getCarBookings,
   getCars,
   getDriver,
-  updateBooking,
+  getDriverBookings,
+  getPrice,
+  getSingleCarBooking,
+  getSingleDriverBooking,
   updateCar,
+  updateCarBooking,
+  updateDriver,
+  updateDriverBooking,
   updatePrice,
 } from "../controllers/adminController.js";
 
@@ -27,11 +33,22 @@ router
   .all(methodNotAllowed);
 
 // Prices
-router.route("/price").post(updatePrice).all(methodNotAllowed);
+router.route("/price").get(getPrice).post(updatePrice).all(methodNotAllowed);
 
 //Bookings
-router.route("/booking").get(getBookings).post(bookCar).all(methodNotAllowed);
-router.route("/booking/:bookingId").get(updateBooking).all(methodNotAllowed);
+router.route("/booking/car").get(getCarBookings).all(methodNotAllowed);
+router
+  .route("/booking/car/:bookingId")
+  .get(getSingleCarBooking)
+  .patch(updateCarBooking)
+  .all(methodNotAllowed);
+
+router.route("/booking/driver").get(getDriverBookings).all(methodNotAllowed);
+router
+  .route("/booking/driver/:bookingId")
+  .get(getSingleDriverBooking)
+  .patch(updateDriverBooking)
+  .all(methodNotAllowed);
 
 //Drivers
 router
@@ -39,6 +56,12 @@ router
   .get(getAllDrivers)
   .post(addDriver)
   .all(methodNotAllowed);
-router.route("/driver/:driverId").get(getDriver).all(methodNotAllowed);
+
+router
+  .route("/driver/:driverId")
+  .get(getDriver)
+  .delete(deleteDriver)
+  .patch(updateDriver)
+  .all(methodNotAllowed);
 
 export default router;

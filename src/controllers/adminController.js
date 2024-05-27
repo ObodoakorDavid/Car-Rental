@@ -23,7 +23,7 @@ const getCar = asyncWrapper(async (req, res, next) => {
 
 const updateCar = asyncWrapper(async (req, res, next) => {
   const { carId } = req.params;
-  const car = await carService.updateCar(carId);
+  const car = await carService.updateCar(carId, req.body);
   res.status(200).json({ message: "Car Updated", car });
 });
 
@@ -34,27 +34,49 @@ const deleteCar = asyncWrapper(async (req, res, next) => {
 });
 
 // Prices
+const getPrice = asyncWrapper(async (req, res, next) => {
+  const result = await priceService.getCurrentPrice(req.query.name);
+  res.status(200).json({ price: result });
+});
+
 const updatePrice = asyncWrapper(async (req, res, next) => {
   const result = await priceService.updatePrice(req.body);
   res.status(200).json(result);
 });
 
-// Bookings
-const bookCar = asyncWrapper(async (req, res, next) => {
-  const { userId } = req.user;
-  const result = await bookingService.bookCar(req.body, userId);
+// Bookings -- Cars
+const getCarBookings = asyncWrapper(async (req, res, next) => {
+  const result = await bookingService.getAllCarBookings(req.query);
   res.status(200).json(result);
 });
 
-const getBookings = asyncWrapper(async (req, res, next) => {
-  const { userId } = req.user;
-  const result = await bookingService.getUserBookings(userId);
-  res.status(200).json(result);
-});
-
-const updateBooking = asyncWrapper(async (req, res, next) => {
+const getSingleCarBooking = asyncWrapper(async (req, res, next) => {
   const { bookingId } = req.params;
-  const result = await bookingService.updateBooking(bookingId, req.body);
+  const result = await bookingService.getSingleCarBooking(bookingId);
+  res.status(200).json(result);
+});
+
+const updateCarBooking = asyncWrapper(async (req, res, next) => {
+  const { bookingId } = req.params;
+  const result = await bookingService.updateCarBooking(bookingId, req.body);
+  res.status(200).json(result);
+});
+
+// Bookings -- Drivers
+const getDriverBookings = asyncWrapper(async (req, res, next) => {
+  const result = await bookingService.getDriverBookings(req.query);
+  res.status(200).json(result);
+});
+
+const getSingleDriverBooking = asyncWrapper(async (req, res, next) => {
+  const { bookingId } = req.params;
+  const result = await bookingService.getSingleDriverBooking(bookingId);
+  res.status(200).json(result);
+});
+
+const updateDriverBooking = asyncWrapper(async (req, res, next) => {
+  const { bookingId } = req.params;
+  const result = await bookingService.updateDriverBookings(bookingId, req.body);
   res.status(200).json(result);
 });
 
@@ -65,13 +87,25 @@ const addDriver = asyncWrapper(async (req, res, next) => {
 });
 
 const getAllDrivers = asyncWrapper(async (req, res, next) => {
-  const result = await driverService.getAllDrivers();
+  const result = await driverService.getAllDrivers(req.query);
   res.status(200).json(result);
 });
 
 const getDriver = asyncWrapper(async (req, res, next) => {
   const { driverId } = req.params;
   const result = await driverService.getDriver(driverId);
+  res.status(200).json(result);
+});
+
+const updateDriver = asyncWrapper(async (req, res, next) => {
+  const { driverId } = req.params;
+  const result = await driverService.updateDriver(driverId, req.body);
+  res.status(200).json(result);
+});
+
+const deleteDriver = asyncWrapper(async (req, res, next) => {
+  const { driverId } = req.params;
+  const result = await driverService.deleteDriver(driverId);
   res.status(200).json(result);
 });
 
@@ -82,10 +116,16 @@ export {
   updateCar,
   deleteCar,
   updatePrice,
-  bookCar,
-  getBookings,
-  updateBooking,
+  getCarBookings,
+  updateCarBooking,
   addDriver,
   getDriver,
   getAllDrivers,
+  getPrice,
+  updateDriver,
+  deleteDriver,
+  getSingleCarBooking,
+  updateDriverBooking,
+  getDriverBookings,
+  getSingleDriverBooking,
 };

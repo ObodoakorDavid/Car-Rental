@@ -60,6 +60,8 @@ async function signIn(email, password) {
 
   const userInfo = {
     id: user._id,
+    username: userProfile.userId.firstName,
+    lastName: userProfile.userId.lastName,
     roles: userProfile.roles,
     image: userProfile.image,
     phoneNumber: userProfile.phoneNumber,

@@ -1,61 +1,38 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const bookingSchema = new Schema(
+const driverBookingSchema = new Schema(
   {
     user: {
       type: mongoose.Types.ObjectId,
       ref: "UserProfile",
       required: true,
     },
-    car: {
+    driver: {
       type: mongoose.Types.ObjectId,
-      ref: "Car",
+      ref: "Driver",
       required: true,
     },
-    pickUpDate: {
+    pickUpLocation: {
       type: String,
       required: true,
     },
-    pickUpTime: {
+    date: {
+      type: String,
+      required: true,
+    },
+    time: {
       type: String,
       required: true,
     },
     duration: {
-      type: String,
+      type: Number,
       required: true,
-    },
-    address: {
-      type: String,
-      required: true,
-    },
-    withinLagos: {
-      type: Boolean,
-      default: false,
-    },
-    escortNeeded: {
-      type: Boolean,
-      default: true,
-    },
-    driverNeeded: {
-      type: Boolean,
-      default: true,
-    },
-    driver: {
-      type: mongoose.Types.ObjectId,
-      ref: "Driver",
     },
     totalPrice: {
       type: Number,
-      default: 0,
-      min: 0,
       required: true,
-    },
-    datePicked: {
-      type: Date,
-    },
-    dateReturned: {
-      type: Date,
+      min: 0,
     },
     paymentStatus: {
       type: String,
@@ -68,9 +45,9 @@ const bookingSchema = new Schema(
     status: {
       type: String,
       enum: {
-        values: ["pending", "ongoing", "completed", "cancelled"],
+        values: ["pending", "approved", "rejected", "completed"],
         message:
-          "Status must be either 'pending', 'ongoing', 'completed' or 'cancelled'",
+          "Status must be either 'pending', 'approved', 'rejected' or 'completed'",
       },
       default: "pending",
     },
@@ -78,4 +55,4 @@ const bookingSchema = new Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Booking", bookingSchema);
+export default mongoose.model("DriverBooking", driverBookingSchema);
