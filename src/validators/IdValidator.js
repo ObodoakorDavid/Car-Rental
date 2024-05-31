@@ -17,7 +17,7 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
-export const validateParamId = [
-  param("id").custom(isMongoId).withMessage("Invalid ID"),
+export const validateParamId = (paramName) => [
+  param(paramName).isMongoId().withMessage("Invalid ID"),
   handleValidationErrors,
 ];

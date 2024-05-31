@@ -26,7 +26,7 @@ async function validateOTP(email, otp) {
 function validateMongoId(id) {
   const isValid = mongoose.isValidObjectId(id);
   if (!isValid) {
-    throw customError(400, `${id} is Not Valid Id`);
+    throw customError(400, `Invalid Id`);
   }
 }
 

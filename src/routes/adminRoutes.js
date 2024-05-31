@@ -26,6 +26,7 @@ import {
   validateDriver,
   validateUpdateDriver,
 } from "../validators/driverValidator.js";
+import { validateUpdateCarBooking } from "../validators/carBookingValidator.js";
 
 const router = express.Router();
 
@@ -37,9 +38,9 @@ router
   .all(methodNotAllowed);
 router
   .route("/car/:carId")
-  .get(validateParamId, getCar)
-  .patch(validateParamId, updateCar)
-  .delete(validateParamId, deleteCar)
+  .get(validateParamId("carId"), getCar)
+  .patch(validateParamId("carId"), validateCarUpdate, updateCar)
+  .delete(validateParamId("carId"), deleteCar)
   .all(methodNotAllowed);
 
 //Drivers
@@ -51,9 +52,9 @@ router
 
 router
   .route("/driver/:driverId")
-  .get(validateParamId, getDriver)
-  .delete(validateParamId, deleteDriver)
-  .patch(validateParamId, validateUpdateDriver, updateDriver)
+  .get(validateParamId("driverId"), getDriver)
+  .delete(validateParamId("driverId"), deleteDriver)
+  .patch(validateParamId("driverId"), validateUpdateDriver, updateDriver)
   .all(methodNotAllowed);
 
 // Prices
@@ -63,15 +64,19 @@ router.route("/price").get(getPrice).post(updatePrice).all(methodNotAllowed);
 router.route("/booking/car").get(getCarBookings).all(methodNotAllowed);
 router
   .route("/booking/car/:bookingId")
-  .get(validateParamId, getSingleCarBooking)
-  .patch(validateParamId, validateCarUpdate, updateCarBooking)
+  .get(validateParamId("bookingId"), getSingleCarBooking)
+  .patch(
+    validateParamId("bookingId"),
+    validateUpdateCarBooking,
+    updateCarBooking
+  )
   .all(methodNotAllowed);
 
 router.route("/booking/driver").get(getDriverBookings).all(methodNotAllowed);
 router
   .route("/booking/driver/:bookingId")
-  .get(validateParamId, getSingleDriverBooking)
-  .patch(validateParamId, updateDriverBooking)
+  .get(validateParamId("bookingId"), getSingleDriverBooking)
+  .patch(validateParamId("bookingId"), updateDriverBooking)
   .all(methodNotAllowed);
 
 export default router;

@@ -52,7 +52,8 @@ export const validateCarBooking = [
     .withMessage("Address must be a string"),
 
   body("withinLagos")
-    .optional()
+    .exists()
+    .withMessage("withinLagos is required")
     .isBoolean()
     .withMessage("Within Lagos must be a boolean"),
 
@@ -68,23 +69,23 @@ export const validateCarBooking = [
     .isBoolean()
     .withMessage("Driver needed must be a boolean"),
 
-  body("driverId")
-    .custom((value, { req }) => {
-      // Check if driverNeeded is true and driverId is not provided
-      if (req.body.driverNeeded && !value) {
-        throw new Error("Please provide a driverId");
-      }
-      // If driverNeeded is false or driverId is provided, return true
-      return true;
-    })
-    .custom((value, { req }) => {
-      // Validate driverId if provided
-      if (value) {
-        return isMongoId(value);
-      }
-      return true; // Skip validation if driverId is not provided
-    })
-    .withMessage("Invalid Driver ID"),
+  // body("driverId")
+  //   .custom((value, { req }) => {
+  //     // Check if driverNeeded is true and driverId is not provided
+  //     if (req.body.driverNeeded && !value) {
+  //       throw new Error("Please provide a driverId");
+  //     }
+  //     // If driverNeeded is false or driverId is provided, return true
+  //     return true;
+  //   })
+  //   .custom((value, { req }) => {
+  //     // Validate driverId if provided
+  //     if (value) {
+  //       return isMongoId(value);
+  //     }
+  //     return true; // Skip validation if driverId is not provided
+  //   })
+  //   .withMessage("Invalid Driver ID"),
 
   body("totalPrice")
     .exists()
@@ -111,6 +112,21 @@ export const validateCarBooking = [
     .optional()
     .isIn(["pending", "approved", "rejected", "completed"])
     .withMessage("Invalid booking status"),
+
+  handleValidationErrors,
+];
+
+export const validateUpdateCarBooking = [
+  body("status")
+    .exists()
+    .withMessage("status is required")
+    .isIn(["pending", "approved", "rejected", "completed"])
+    .withMessage("Invalid booking status"),
+
+  body("driverId")
+    .optional()
+    .custom(isMongoId)
+    .withMessage("Invalid driver ID"),
 
   handleValidationErrors,
 ];

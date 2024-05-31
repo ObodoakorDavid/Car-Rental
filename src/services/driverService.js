@@ -47,6 +47,7 @@ async function getAllDrivers(query = {}) {
     const drivers = await Driver.find(searchQuery)
       .skip(skip)
       .limit(perPage)
+      .sort({ createdAt: -1 })
       .populate("bookings");
 
     const totalCount = await Driver.countDocuments(searchQuery);
@@ -56,7 +57,9 @@ async function getAllDrivers(query = {}) {
     return { drivers, pagination };
   }
 
-  const drivers = await Driver.find(searchQuery).populate("bookings");
+  const drivers = await Driver.find(searchQuery)
+    .sort({ createdAt: -1 })
+    .populate("bookings");
   return { drivers };
 }
 
@@ -70,8 +73,7 @@ async function getDriver(driverId) {
   return { driver };
 }
 
-async function updateDriver(driverId, updatedDetails) {
-  validateMongoId(driverId);
+async function updateDriver(driverId, updatedDetails, images) {
   const driver = await Driver.findByIdAndUpdate(
     driverId,
     {
@@ -82,8 +84,18 @@ async function updateDriver(driverId, updatedDetails) {
   if (!driver) {
     throw customError(404, "Driver Not Found");
   }
+  const { avatar } = { images };
 
-  return { driver };
+  if (avatar) {
+    console.log(avatar);
+    const url = await uploadService.uploadImageToCloudinary(
+      avatar.tempFilePath
+    );
+    driver.avatar = url;
+    await driver.save();
+  }
+
+  return { message: "Driver Updated", driver };
 }
 
 // Delete Driver

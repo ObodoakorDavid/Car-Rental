@@ -71,7 +71,8 @@ async function getAllCarBookings(query = {}) {
     const skip = page ? (page - 1) * perPage : 0;
     const carBookings = await CarBooking.find(searchQuery)
       .skip(skip)
-      .limit(perPage);
+      .limit(perPage)
+      .sort({ createdAt: -1 });
 
     const totalCount = await CarBooking.countDocuments(searchQuery);
     const totalPages = Math.ceil(totalCount / perPage);
@@ -86,7 +87,9 @@ async function getAllCarBookings(query = {}) {
     };
   }
 
-  const carBookings = await CarBooking.find(searchQuery);
+  const carBookings = await CarBooking.find(searchQuery).sort({
+    createdAt: -1,
+  });
   return { bookings: carBookings };
 }
 
@@ -171,7 +174,9 @@ async function getCarBookingsStatistics() {
 // Get User Bookings
 async function getUserBookings(userId) {
   const userProfile = await userService.findUserProfileById(userId);
-  const bookings = await CarBooking.find({ user: userProfile._id });
+  const bookings = await CarBooking.find({ user: userProfile._id }).sort({
+    createdAt: -1,
+  });
   return { bookings };
 }
 
@@ -188,7 +193,7 @@ async function getSingleCarBooking(bookingId) {
 // Update User Car Bookings
 const STATUS = {
   PENDING: "pending",
-  APPROVED: "Approved",
+  APPROVED: "approved",
   REJECTED: "rejected",
   COMPLETED: "completed",
 };
@@ -198,27 +203,30 @@ async function updateCarBooking(bookingId, updatedDetails = {}) {
 
   const { booking: carBooking } = await getSingleCarBooking(bookingId);
 
-  if (carBooking.driverNeeded && !driverId) {
-    throw customError(400, "Driver is needed, please provide a driver ID");
-  }
+  console.log(carBooking.driverNeeded && !driverId);
 
-  if (!status) {
-    throw customError(400, "Please provide a valid status");
+  // Request for driverId to approve
+  if (status.toLowerCase() === STATUS.APPROVED) {
+    if (carBooking.driverNeeded && !driverId) {
+      throw customError(400, "Driver is needed, please provide a driver ID");
+    }
   }
 
   const updateFields = { status };
 
-  if (status === STATUS.ONGOING) {
+  if (status.toLowerCase() === STATUS.ONGOING) {
     updateFields.datePicked = new Date();
   }
-  if (status === STATUS.COMPLETED) {
+  if (status.toLowerCase() === STATUS.COMPLETED) {
     updateFields.dateReturned = new Date();
   }
 
-  if (carBooking.driverNeeded && driverId) {
-    validateMongoId(driverId);
-    await driverService.checkDriverAvailability(driverId);
-    updateFields.driver = driverId;
+  if (status.toLowerCase() === STATUS.APPROVED) {
+    if (carBooking.driverNeeded && driverId) {
+      validateMongoId(driverId);
+      await driverService.checkDriverAvailability(driverId);
+      updateFields.driver = driverId;
+    }
   }
 
   const updatedCarBooking = await CarBooking.findByIdAndUpdate(
@@ -228,10 +236,13 @@ async function updateCarBooking(bookingId, updatedDetails = {}) {
   );
 
   // Update car and driver availability if booking is completed
-  if (status === STATUS.COMPLETED || status === STATUS.REJECTED) {
+  if (
+    status.toLowerCase() === STATUS.COMPLETED ||
+    status.toLowerCase() === STATUS.REJECTED
+  ) {
     await carService.updateCar(updatedCarBooking.car, { isAvailable: true });
 
-    if (updatedCarBooking.driverNeeded) {
+    if (updatedCarBooking.driverNeeded && updateCarBooking?.driver) {
       await driverService.updateDriver(updatedCarBooking.driver, {
         isAvailable: true,
       });
@@ -273,7 +284,7 @@ async function bookDriver(bookingDetails, userId) {
 
 // Get Driver Bookings
 async function getDriverBookings() {
-  const driverBookings = await DriverBooking.find({});
+  const driverBookings = await DriverBooking.find({}).sort({ createdAt: -1 });
   return { bookings: driverBookings };
 }
 

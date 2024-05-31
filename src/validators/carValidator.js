@@ -201,4 +201,6 @@ export const validateCarUpdate = [
     .withMessage("Max power should be a positive number"),
 
   handleValidationErrors,
+
+  validateUpdateImages,
 ];

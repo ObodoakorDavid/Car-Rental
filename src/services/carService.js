@@ -23,7 +23,7 @@ async function getAllCars(query) {
 
   pagination.totalPages = Math.ceil(totalCountQuery / limit);
 
-  const cars = await Car.find().skip(skip).limit(limit);
+  const cars = await Car.find().skip(skip).limit(limit).sort({ createdAt: -1 });
 
   return { cars, pagination };
 }
@@ -47,15 +47,38 @@ async function deleteCar(carId) {
 }
 
 // Update Car
-async function updateCar(carId, carDetails) {
+async function updateCar(carId, carDetails, images) {
   const car = await Car.findByIdAndUpdate(
     carId,
     { ...carDetails },
     { new: true, runValidators: true }
   );
+
   if (!car) {
     throw customError(404, `No Car with ID: ${carId}`);
   }
+
+  const { coverImage, images: otherImages } = images;
+
+  if (coverImage) {
+    const url = await uploadService.uploadImageToCloudinary(
+      coverImage.tempFilePath
+    );
+    car.coverImage = url;
+    await car.save();
+  }
+
+  if (otherImages) {
+    const allImages = [];
+    for (const image of otherImages) {
+      allImages.push({
+        url: await uploadService.uploadImageToCloudinary(image.tempFilePath),
+      });
+    }
+    car.images = allImages;
+    car.save();
+  }
+
   return car;
 }
 

@@ -22,7 +22,7 @@ router
 
 router
   .route("/car/:bookingId")
-  .get(validateParamId, getSingleCarBooking)
+  .get(validateParamId("bookingId"), getSingleCarBooking)
   .all(methodNotAllowed);
 
 router
@@ -33,7 +33,7 @@ router
 
 router
   .route("/driver/:bookingId")
-  .get(validateParamId, getSingleDriverBooking)
+  .get(validateParamId("bookingId"), getSingleDriverBooking)
   .all(methodNotAllowed);
 
 export default router;

@@ -139,7 +139,7 @@ export const validateDriver = [
     .exists()
     .withMessage("Please provide more information")
     .notEmpty()
-    .withMessage("licenseClass can't be empty")
+    .withMessage("moreInfo can't be empty")
     .isString()
     .withMessage("moreInfo must be a string"),
 
@@ -254,6 +254,13 @@ export const validateUpdateDriver = [
     .withMessage("licenseClass can't be empty")
     .isString()
     .withMessage("moreInfo must be a string"),
+
+  body("isAvailable")
+    .optional()
+    .notEmpty()
+    .withMessage("isAvailable can't be empty")
+    .isBoolean()
+    .withMessage("isAvailable must be a boolean"),
 
   handleValidationErrors,
 

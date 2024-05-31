@@ -99,7 +99,11 @@ const getDriver = asyncWrapper(async (req, res, next) => {
 
 const updateDriver = asyncWrapper(async (req, res, next) => {
   const { driverId } = req.params;
-  const result = await driverService.updateDriver(driverId, req.body);
+  const result = await driverService.updateDriver(
+    driverId,
+    req.body,
+    req.files
+  );
   res.status(200).json(result);
 });
 

@@ -67,3 +67,13 @@ export const validateDriverBooking = [
 
   handleValidationErrors,
 ];
+
+export const validateUpdateDriverBooking = [
+  body("status")
+    .exists()
+    .withMessage("status is required")
+    .isIn(["pending", "approved", "rejected", "completed"])
+    .withMessage("Invalid booking status"),
+
+  handleValidationErrors,
+];

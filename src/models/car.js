@@ -59,6 +59,13 @@ const carSchema = new Schema(
     images: {
       type: [imageSchema],
       required: true,
+      default: [], // Ensures images is an array by default
+      validate: {
+        validator: function (v) {
+          return v.length <= 4;
+        },
+        message: "A car can have a maximum of 4 images.",
+      },
     },
   },
   {
