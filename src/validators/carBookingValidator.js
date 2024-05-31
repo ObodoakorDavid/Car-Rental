@@ -1,4 +1,4 @@
-import { body, param, validationResult } from "express-validator";
+import { body, validationResult } from "express-validator";
 import mongoose from "mongoose";
 
 // Utility function to validate MongoDB ObjectId
@@ -111,12 +111,6 @@ export const validateCarBooking = [
     .optional()
     .isIn(["pending", "approved", "rejected", "completed"])
     .withMessage("Invalid booking status"),
-
-  handleValidationErrors,
-];
-
-export const validateObjectId = [
-  param("id").custom(isMongoId).withMessage("Invalid booking ID"),
 
   handleValidationErrors,
 ];

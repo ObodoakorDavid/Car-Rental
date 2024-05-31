@@ -20,16 +20,40 @@ import {
   updateDriverBooking,
   updatePrice,
 } from "../controllers/adminController.js";
+import { validateParamId } from "../validators/IdValidator.js";
+import { validateCar, validateCarUpdate } from "../validators/carValidator.js";
+import {
+  validateDriver,
+  validateUpdateDriver,
+} from "../validators/driverValidator.js";
 
 const router = express.Router();
 
 // Cars
-router.route("/car").get(getCars).post(createCar).all(methodNotAllowed);
+router
+  .route("/car")
+  .get(getCars)
+  .post(validateCar, createCar)
+  .all(methodNotAllowed);
 router
   .route("/car/:carId")
-  .get(getCar)
-  .patch(updateCar)
-  .delete(deleteCar)
+  .get(validateParamId, getCar)
+  .patch(validateParamId, updateCar)
+  .delete(validateParamId, deleteCar)
+  .all(methodNotAllowed);
+
+//Drivers
+router
+  .route("/driver")
+  .get(getAllDrivers)
+  .post(validateDriver, addDriver)
+  .all(methodNotAllowed);
+
+router
+  .route("/driver/:driverId")
+  .get(validateParamId, getDriver)
+  .delete(validateParamId, deleteDriver)
+  .patch(validateParamId, validateUpdateDriver, updateDriver)
   .all(methodNotAllowed);
 
 // Prices
@@ -39,29 +63,15 @@ router.route("/price").get(getPrice).post(updatePrice).all(methodNotAllowed);
 router.route("/booking/car").get(getCarBookings).all(methodNotAllowed);
 router
   .route("/booking/car/:bookingId")
-  .get(getSingleCarBooking)
-  .patch(updateCarBooking)
+  .get(validateParamId, getSingleCarBooking)
+  .patch(validateParamId, validateCarUpdate, updateCarBooking)
   .all(methodNotAllowed);
 
 router.route("/booking/driver").get(getDriverBookings).all(methodNotAllowed);
 router
   .route("/booking/driver/:bookingId")
-  .get(getSingleDriverBooking)
-  .patch(updateDriverBooking)
-  .all(methodNotAllowed);
-
-//Drivers
-router
-  .route("/driver")
-  .get(getAllDrivers)
-  .post(addDriver)
-  .all(methodNotAllowed);
-
-router
-  .route("/driver/:driverId")
-  .get(getDriver)
-  .delete(deleteDriver)
-  .patch(updateDriver)
+  .get(validateParamId, getSingleDriverBooking)
+  .patch(validateParamId, updateDriverBooking)
   .all(methodNotAllowed);
 
 export default router;

@@ -19,12 +19,12 @@ const carSchema = new Schema(
       type: String,
       required: true,
     },
-    transmisson: {
+    transmission: {
       type: String,
       required: true,
     },
     passengers: {
-      type: String,
+      type: Number,
       required: true,
     },
     color: {
@@ -33,18 +33,23 @@ const carSchema = new Schema(
     },
     pricePerDay: {
       type: Number,
-      required: true,
+      validate: {
+        validator: function (v) {
+          return v > 0;
+        },
+        message: "Price per day must be a positive number.",
+      },
     },
     isAvailable: {
       type: Boolean,
       default: true,
     },
     topSpeed: {
-      type: String,
+      type: Number,
       required: true,
     },
     maxPower: {
-      type: String,
+      type: Number,
       required: true,
     },
     coverImage: {
@@ -54,10 +59,6 @@ const carSchema = new Schema(
     images: {
       type: [imageSchema],
       required: true,
-    },
-    isAvailable: {
-      type: Boolean,
-      default: true,
     },
   },
   {

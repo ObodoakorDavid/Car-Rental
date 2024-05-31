@@ -10,6 +10,7 @@ import {
 } from "../controllers/bookingController.js";
 import { validateCarBooking } from "../validators/carBookingValidator.js";
 import { validateDriverBooking } from "../validators/driverBookingValidator.js";
+import { validateParamId } from "../validators/IdValidator.js";
 
 const router = express.Router();
 
@@ -19,7 +20,10 @@ router
   .post(validateCarBooking, bookCar)
   .all(methodNotAllowed);
 
-router.route("/car/:bookingId").get(getSingleCarBooking).all(methodNotAllowed);
+router
+  .route("/car/:bookingId")
+  .get(validateParamId, getSingleCarBooking)
+  .all(methodNotAllowed);
 
 router
   .route("/driver")
@@ -29,7 +33,7 @@ router
 
 router
   .route("/driver/:bookingId")
-  .get(getSingleDriverBooking)
+  .get(validateParamId, getSingleDriverBooking)
   .all(methodNotAllowed);
 
 export default router;

@@ -1,9 +1,8 @@
-import { body, param, validationResult } from "express-validator";
+import { body, validationResult } from "express-validator";
 import mongoose from "mongoose";
 
 // Utility function to validate MongoDB ObjectId
 const isMongoId = (value) => mongoose.Types.ObjectId.isValid(value);
-
 // Custom time validation function
 const isValidTime = (value) => {
   return /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(value);
@@ -51,7 +50,9 @@ export const validateDriverBooking = [
     .exists()
     .withMessage("Duration is required")
     .isNumeric()
-    .withMessage("Duration should be a number"),
+    .withMessage("Duration should be a number")
+    .isInt()
+    .withMessage("Duration should be a whole number"),
 
   body("totalPrice")
     .exists()
@@ -63,12 +64,6 @@ export const validateDriverBooking = [
     .optional()
     .isIn(["pending", "success"])
     .withMessage("Payment status should either be pending or success"),
-
-  handleValidationErrors,
-];
-
-export const validateObjectId = [
-  param("id").custom(isMongoId).withMessage("Invalid booking ID"),
 
   handleValidationErrors,
 ];
