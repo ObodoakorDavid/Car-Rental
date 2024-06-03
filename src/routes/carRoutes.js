@@ -7,6 +7,9 @@ import { validateParamId } from "../validators/IdValidator.js";
 const router = express.Router();
 
 router.route("/").get(getCars).all(methodNotAllowed);
-router.route("/:carId").get(validateParamId, getCar).all(methodNotAllowed);
+router
+  .route("/:carId")
+  .get(validateParamId("carId"), getCar)
+  .all(methodNotAllowed);
 
 export default router;

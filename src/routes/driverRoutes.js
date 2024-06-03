@@ -12,6 +12,6 @@ const router = express.Router();
 router.route("/").get(getAllDrivers).post(addDriver).all(methodNotAllowed);
 router
   .route("/:driverId")
-  .get(validateParamId, getDriver)
+  .get(validateParamId("driverId"), getDriver)
   .all(methodNotAllowed);
 export default router;
