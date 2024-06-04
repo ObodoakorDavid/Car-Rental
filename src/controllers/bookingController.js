@@ -15,6 +15,7 @@ const getCarBookings = asyncWrapper(async (req, res, next) => {
 
 const getSingleCarBooking = asyncWrapper(async (req, res, next) => {
   const { bookingId } = req.params;
+  console.log(bookingId);
   const result = await bookingService.getSingleCarBooking(bookingId);
   res.status(200).json(result);
 });
