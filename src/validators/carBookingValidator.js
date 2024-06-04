@@ -42,8 +42,6 @@ export const validateCarBooking = [
     .withMessage("Pick-up time must be a valid time in HH:mm:ss format"),
 
   body("duration").exists().withMessage("Duration is required"),
-  // .matches(/^\d+h$/)
-  // .withMessage('Duration must be in the format of "2h"'),
 
   body("address")
     .exists()
@@ -68,24 +66,6 @@ export const validateCarBooking = [
     .withMessage("driverNeeded is required")
     .isBoolean()
     .withMessage("Driver needed must be a boolean"),
-
-  // body("driverId")
-  //   .custom((value, { req }) => {
-  //     // Check if driverNeeded is true and driverId is not provided
-  //     if (req.body.driverNeeded && !value) {
-  //       throw new Error("Please provide a driverId");
-  //     }
-  //     // If driverNeeded is false or driverId is provided, return true
-  //     return true;
-  //   })
-  //   .custom((value, { req }) => {
-  //     // Validate driverId if provided
-  //     if (value) {
-  //       return isMongoId(value);
-  //     }
-  //     return true; // Skip validation if driverId is not provided
-  //   })
-  //   .withMessage("Invalid Driver ID"),
 
   body("totalPrice")
     .exists()

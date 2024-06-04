@@ -9,27 +9,13 @@ import userService from "./userService.js";
 
 // Book Car
 async function bookCar(bookingDetails, userId) {
-  const { carId, duration, driverNeeded, escortNeeded, totalPrice, driverId } =
-    bookingDetails;
+  const { carId } = bookingDetails;
 
   const car = await carService.getSingleCar(carId);
 
   if (!car.isAvailable) {
     throw customError(400, "This car is not available");
   }
-
-  if (escortNeeded) {
-    const escortPrice = await priceService.getCurrentPrice("escort");
-  }
-
-  if (driverNeeded) {
-    await driverService.checkDriverAvailability(driverId);
-    const driver = await driverService.getDriver(driverId);
-    const driverPrice = await priceService.getCurrentPrice("driver");
-    bookingDetails.driver = driver._id;
-  }
-
-  
 
   const userProfile = await userService.findUserProfileById(userId);
   const carBooking = await CarBooking.create({
@@ -40,7 +26,6 @@ async function bookCar(bookingDetails, userId) {
 
   await userService.updateUser(userId, { $push: { booking: carBooking._id } });
   await carService.updateCar(carId, { isAvailable: false });
-  await driverService.updateDriver(driverId, { isAvailable: false });
 
   return { message: "Booking Successfull", booking: carBooking };
 }
@@ -167,9 +152,11 @@ async function getCarBookingsStatistics() {
 // Get User Bookings
 async function getUserBookings(userId) {
   const userProfile = await userService.findUserProfileById(userId);
-  const bookings = await CarBooking.find({ user: userProfile._id }).sort({
-    createdAt: -1,
-  });
+  const bookings = await CarBooking.find({ user: userProfile._id })
+    .sort({
+      createdAt: -1,
+    })
+    .populate("car");
   return { bookings };
 }
 

@@ -47,7 +47,7 @@ async function deleteCar(carId) {
 }
 
 // Update Car
-async function updateCar(carId, carDetails, images) {
+async function updateCar(carId, carDetails, images = {}) {
   const car = await Car.findByIdAndUpdate(
     carId,
     { ...carDetails },
