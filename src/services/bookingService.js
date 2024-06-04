@@ -18,12 +18,8 @@ async function bookCar(bookingDetails, userId) {
     throw customError(400, "This car is not available");
   }
 
-  // Calculate price
-  let newPrice = car.pricePerDay * parseInt(duration);
-
   if (escortNeeded) {
     const escortPrice = await priceService.getCurrentPrice("escort");
-    newPrice = newPrice + escortPrice;
   }
 
   if (driverNeeded) {
@@ -31,12 +27,9 @@ async function bookCar(bookingDetails, userId) {
     const driver = await driverService.getDriver(driverId);
     const driverPrice = await priceService.getCurrentPrice("driver");
     bookingDetails.driver = driver._id;
-    newPrice = newPrice + driverPrice;
   }
 
-  if (parseInt(newPrice) !== parseInt(totalPrice)) {
-    throw customError(400, "Price incorrect");
-  }
+  
 
   const userProfile = await userService.findUserProfileById(userId);
   const carBooking = await CarBooking.create({
