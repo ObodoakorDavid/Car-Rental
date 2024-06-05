@@ -12,7 +12,6 @@ const isValidTime = (value) => {
 // Middleware to handle validation errors
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
-  console.log(errors);
   if (errors.array().length > 0) {
     console.log(errors.array()[0].msg);
   }

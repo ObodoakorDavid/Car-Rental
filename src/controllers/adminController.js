@@ -3,6 +3,7 @@ import bookingService from "../services/bookingService.js";
 import carService from "../services/carService.js";
 import driverService from "../services/driverService.js";
 import priceService from "../services/priceService.js";
+import userService from "../services/userService.js";
 
 // Cars
 const createCar = asyncWrapper(async (req, res, next) => {
@@ -113,6 +114,12 @@ const deleteDriver = asyncWrapper(async (req, res, next) => {
   res.status(200).json(result);
 });
 
+// Users
+const getAllUsers = asyncWrapper(async (req, res, next) => {
+  const result = await userService.getAllUsers();
+  res.status(200).json(result);
+});
+
 export {
   createCar,
   getCars,
@@ -132,4 +139,5 @@ export {
   updateDriverBooking,
   getDriverBookings,
   getSingleDriverBooking,
+  getAllUsers,
 };

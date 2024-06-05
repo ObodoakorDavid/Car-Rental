@@ -115,10 +115,23 @@ async function updateUser(userId, newDetails) {
   return userProfile;
 }
 
+// Get All Users
+async function getAllUsers() {
+  const users = await UserProfile.find({ roles: { $nin: ["admin"] } }).populate(
+    {
+      path: "userId",
+      select: "firstName lastName",
+    }
+  );
+
+  return { users };
+}
+
 export default {
   register,
   findUserByEmail,
   findUserProfileById,
   signIn,
   updateUser,
+  getAllUsers,
 };

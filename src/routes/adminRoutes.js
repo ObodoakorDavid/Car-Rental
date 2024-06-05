@@ -6,6 +6,7 @@ import {
   deleteCar,
   deleteDriver,
   getAllDrivers,
+  getAllUsers,
   getCar,
   getCarBookings,
   getCars,
@@ -78,5 +79,8 @@ router
   .get(validateParamId("bookingId"), getSingleDriverBooking)
   .patch(validateParamId("bookingId"), updateDriverBooking)
   .all(methodNotAllowed);
+
+// Users
+router.route("/users").get(getAllUsers).all(methodNotAllowed);
 
 export default router;
