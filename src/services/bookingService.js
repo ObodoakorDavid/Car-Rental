@@ -163,7 +163,9 @@ async function getUserBookings(userId) {
 // Get Single Car Booking
 async function getSingleCarBooking(bookingId) {
   validateMongoId(bookingId);
-  const carBooking = await CarBooking.findById(bookingId);
+  const carBooking = await CarBooking.findById(bookingId).populate({
+    path: "car",
+  });
   if (!carBooking) {
     throw customError(404, "No Car Booking Found");
   }

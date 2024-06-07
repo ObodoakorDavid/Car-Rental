@@ -28,6 +28,7 @@ const getUser = asyncWrapper(async (req, res, next) => {
       id: userId,
       username: userProfile.userId.firstName,
       lastName: userProfile.userId.lastName,
+      email: userProfile.userId.email,
       roles: userProfile.roles,
       image: userProfile.image,
       phoneNumber: userProfile.phoneNumber,
