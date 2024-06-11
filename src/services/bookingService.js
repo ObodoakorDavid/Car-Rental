@@ -162,6 +162,7 @@ async function getUserBookings(userId) {
 
 // Get Single Car Booking
 async function getSingleCarBooking(bookingId) {
+  console.log({ bookingId });
   validateMongoId(bookingId);
   const carBooking = await CarBooking.findById(bookingId).populate({
     path: "car",
@@ -232,6 +233,21 @@ async function updateCarBooking(bookingId, updatedDetails = {}) {
   }
 
   return { message: "Booking Updated", booking: updatedCarBooking };
+}
+
+async function updateUserCarBooking(bookingId, updatedDetails = {}) {
+  const { paymentStatus } = updatedDetails;
+  const { booking: carBookingExists } = await getSingleCarBooking(bookingId);
+
+  if (carBookingExists.paymentStatus === "failed") {
+    throw customError(400, "Booking can't be updated");
+  }
+  const carBooking = await CarBooking.findByIdAndUpdate(
+    bookingId,
+    { paymentStatus },
+    { new: true, runValidators: true }
+  );
+  return { message: "Booking Updated", booking: carBooking };
 }
 
 // ----------------------------------------------------------------------
@@ -315,4 +331,5 @@ export default {
   getSingleDriverBooking,
   getAllCarBookings,
   updateDriverBookings,
+  updateUserCarBooking,
 };

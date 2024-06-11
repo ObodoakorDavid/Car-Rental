@@ -13,6 +13,12 @@ const getCarBookings = asyncWrapper(async (req, res, next) => {
   res.status(200).json(result);
 });
 
+const updateCarBooking = asyncWrapper(async (req, res, next) => {
+  const { bookingId } = req.params;
+  const result = await bookingService.updateUserCarBooking(bookingId, req.body);
+  res.status(200).json(result);
+});
+
 const getSingleCarBooking = asyncWrapper(async (req, res, next) => {
   const { bookingId } = req.params;
   console.log(bookingId);
@@ -45,4 +51,5 @@ export {
   getDriverBookings,
   getSingleDriverBooking,
   getSingleCarBooking,
+  updateCarBooking,
 };

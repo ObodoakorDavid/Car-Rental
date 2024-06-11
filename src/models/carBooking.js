@@ -60,8 +60,9 @@ const carBookingSchema = new Schema(
     paymentStatus: {
       type: String,
       enum: {
-        values: ["pending", "success"],
-        message: "paymentStatus must either be 'pending' or 'success' ",
+        values: ["pending", "success", "failed"],
+        message:
+          "paymentStatus must either be 'pending' or 'success' or 'failed' ",
       },
       default: "pending",
     },

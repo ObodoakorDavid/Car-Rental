@@ -7,11 +7,8 @@ const isMongoId = (value) => mongoose.Types.ObjectId.isValid(value);
 // Middleware to handle validation errors
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
-  console.log(errors);
-  if (errors.array().length > 0) {
-    console.log(errors.array()[0].msg);
-  }
   if (!errors.isEmpty()) {
+    console.log(errors.array()[0].msg);
     return res.status(400).json({ message: errors.array()[0].msg });
   }
   next();

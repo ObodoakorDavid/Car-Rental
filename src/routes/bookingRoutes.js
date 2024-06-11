@@ -7,6 +7,7 @@ import {
   getDriverBookings,
   getSingleCarBooking,
   getSingleDriverBooking,
+  updateCarBooking,
 } from "../controllers/bookingController.js";
 import { validateCarBooking } from "../validators/carBookingValidator.js";
 import { validateDriverBooking } from "../validators/driverBookingValidator.js";
@@ -23,6 +24,7 @@ router
 router
   .route("/car/:bookingId")
   .get(validateParamId("bookingId"), getSingleCarBooking)
+  .patch(validateParamId("bookingId"), updateCarBooking)
   .all(methodNotAllowed);
 
 router
