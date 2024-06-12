@@ -4,6 +4,7 @@ import { validatePassword } from "../utils/validationUtils.js";
 import customError from "../utils/customError.js";
 import generateToken from "../config/generateToken.js";
 import mongoose from "mongoose";
+import { paginate } from "../utils/paginate.js";
 
 // Fields to exclude
 const excludedFields = ["-password", "-__v", "-createdAt", "-updatedAt"];
@@ -116,15 +117,47 @@ async function updateUser(userId, newDetails) {
 }
 
 // Get All Users
-async function getAllUsers() {
-  const users = await UserProfile.find({ roles: { $nin: ["admin"] } }).populate(
-    {
+async function getAllUsers(query = {}) {
+  const { page, perPage } = query;
+
+  if (!page) {
+    const users = await UserProfile.find({
+      roles: { $nin: ["admin"] },
+    }).populate({
       path: "userId",
       select: "firstName lastName",
-    }
-  );
+    });
+    return { users };
+  }
 
-  return { users };
+  const sort = { createdAt: -1 };
+  const populateOptions = {
+    path: "userId",
+    select: "firstName lastName",
+  };
+
+  const { documents: users, pagination } = await paginate(
+    UserProfile,
+    {},
+    page,
+    perPage,
+    sort,
+    populateOptions
+  );
+  return { users, pagination };
+}
+
+async function getUserProfile(userProfileId) {
+  const user = await UserProfile.findById(userProfileId).populate({
+    path: "userId",
+    select: "firstName lastName",
+  });
+
+  if (!user) {
+    throw customError(404, "User profile not found");
+  }
+
+  return { user };
 }
 
 export default {
@@ -134,4 +167,5 @@ export default {
   signIn,
   updateUser,
   getAllUsers,
+  getUserProfile,
 };

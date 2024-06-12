@@ -116,7 +116,13 @@ const deleteDriver = asyncWrapper(async (req, res, next) => {
 
 // Users
 const getAllUsers = asyncWrapper(async (req, res, next) => {
-  const result = await userService.getAllUsers();
+  const result = await userService.getAllUsers(req.query);
+  res.status(200).json(result);
+});
+
+const getSingleUser = asyncWrapper(async (req, res, next) => {
+  const { userProfileId } = req.params;
+  const result = await userService.getUserProfile(userProfileId);
   res.status(200).json(result);
 });
 
@@ -140,4 +146,5 @@ export {
   getDriverBookings,
   getSingleDriverBooking,
   getAllUsers,
+  getSingleUser,
 };

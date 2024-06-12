@@ -15,6 +15,7 @@ import {
   getPrice,
   getSingleCarBooking,
   getSingleDriverBooking,
+  getSingleUser,
   updateCar,
   updateCarBooking,
   updateDriver,
@@ -82,5 +83,9 @@ router
 
 // Users
 router.route("/users").get(getAllUsers).all(methodNotAllowed);
+router
+  .route("/users/:userProfileId")
+  .get(validateParamId("userProfileId"), getSingleUser)
+  .all(methodNotAllowed);
 
 export default router;
