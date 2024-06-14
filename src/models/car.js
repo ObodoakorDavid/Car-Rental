@@ -19,12 +19,8 @@ const carSchema = new Schema(
       type: String,
       required: true,
     },
-    transmission: {
-      type: String,
-      required: true,
-    },
     plateNo: {
-      type: Number,
+      type: String,
       required: true,
     },
     color: {
