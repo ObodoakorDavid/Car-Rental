@@ -23,7 +23,7 @@ const carSchema = new Schema(
       type: String,
       required: true,
     },
-    passengers: {
+    plateNo: {
       type: Number,
       required: true,
     },

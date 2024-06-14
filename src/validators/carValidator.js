@@ -69,26 +69,13 @@ export const validateCar = [
     .isString()
     .withMessage("Model must be a string"),
 
-  body("transmission")
+  body("plateNo")
     .exists()
-    .withMessage("Please provide a transmission type")
+    .withMessage("Please provide a Plate Number")
     .notEmpty()
     .withMessage("transmission can't be empty")
     .isString()
-    .withMessage("transmission must be a string")
-    .custom((value) => {
-      const validValues = ["manual", "automatic"];
-      return validValues.includes(value.toLowerCase().trim());
-    })
-    .withMessage("Transmission type can only be manual and automatic"),
-  // .isIn("Manual, Automatic")
-  // .withMessage("Transimission type can only be manual and automatic"),
-
-  body("passengers")
-    .exists()
-    .withMessage("Please provide passengers count")
-    .isInt({ min: 4 })
-    .withMessage("Passengers should be a number and can't be less than 4"),
+    .withMessage("transmission must be a string"),
 
   body("color")
     .exists()
