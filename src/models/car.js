@@ -44,10 +44,6 @@ const carSchema = new Schema(
       type: Boolean,
       default: true,
     },
-    topSpeed: {
-      type: Number,
-      required: true,
-    },
     maxPower: {
       type: Number,
       required: true,

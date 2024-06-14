@@ -91,12 +91,6 @@ export const validateCar = [
     .isFloat({ min: 0 })
     .withMessage("Price should be higher than 0"),
 
-  body("topSpeed")
-    .exists()
-    .withMessage("Please provide the top speed for this car")
-    .isFloat({ min: 0 })
-    .withMessage("Top speed should be a positive number"),
-
   body("maxPower")
     .exists()
     .withMessage("Please provide the max power for this car")
