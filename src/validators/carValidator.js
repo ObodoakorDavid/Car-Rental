@@ -73,9 +73,9 @@ export const validateCar = [
     .exists()
     .withMessage("Please provide a Plate Number")
     .notEmpty()
-    .withMessage("transmission can't be empty")
+    .withMessage("Plate Number can't be empty")
     .isString()
-    .withMessage("transmission must be a string"),
+    .withMessage("Plate Number must be a string"),
 
   body("color")
     .exists()
