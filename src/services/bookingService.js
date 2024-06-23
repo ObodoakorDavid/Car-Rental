@@ -48,6 +48,7 @@ async function getAllCarBookings(query = {}) {
   if (page) {
     const skip = page ? (page - 1) * perPage : 0;
     const carBookings = await CarBooking.find(searchQuery)
+      .populate({ path: "user" })
       .skip(skip)
       .limit(perPage)
       .sort({ createdAt: -1 });
@@ -65,9 +66,26 @@ async function getAllCarBookings(query = {}) {
     };
   }
 
-  const carBookings = await CarBooking.find(searchQuery).sort({
-    createdAt: -1,
-  });
+  const populateOptions = [
+    {
+      path: "user",
+      select: "userId",
+      populate: {
+        path: "userId",
+        select: "firstName lastName",
+      },
+    },
+    {
+      path: "car",
+      select: "-createdAt -updatedAt -__v",
+    },
+  ];
+
+  const carBookings = await CarBooking.find(searchQuery)
+    .populate(populateOptions)
+    .sort({
+      createdAt: -1,
+    });
   return { bookings: carBookings };
 }
 
