@@ -97,6 +97,12 @@ export const validateCar = [
     .isFloat({ min: 0 })
     .withMessage("Max Power should be a positive number"),
 
+  body("quantity")
+    .exists()
+    .withMessage("Please provide the quantity for this car")
+    .isFloat({ min: 0 })
+    .withMessage("Quantity should be above 0"),
+
   handleValidationErrors,
 
   validateImages,

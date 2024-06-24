@@ -13,7 +13,7 @@ async function bookCar(bookingDetails, userId) {
 
   const car = await carService.getSingleCar(carId);
 
-  if (!car.isAvailable) {
+  if (car.quantity < 1) {
     throw customError(400, "This car is not available");
   }
 
@@ -25,7 +25,7 @@ async function bookCar(bookingDetails, userId) {
   });
 
   await userService.updateUser(userId, { $push: { booking: carBooking._id } });
-  await carService.updateCar(carId, { isAvailable: false });
+  await carService.updateCar(carId, { $inc: { quantity: -1 } });
 
   return { message: "Booking Successfull", booking: carBooking };
 }

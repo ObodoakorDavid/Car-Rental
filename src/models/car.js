@@ -13,19 +13,27 @@ const carSchema = new Schema(
   {
     brand: {
       type: String,
-      required: true,
+      required: [true, "Brand is required"],
     },
     model: {
       type: String,
-      required: true,
+      required: [true, "Model is required"],
     },
     plateNo: {
       type: String,
-      required: true,
+      required: [true, "Plate Number is required"],
     },
     color: {
       type: String,
-      required: true,
+      required: [true, "Plate Number is required"],
+    },
+    maxPower: {
+      type: Number,
+      required: [true, "Max power is required"],
+    },
+    quantity: {
+      type: Number,
+      required: [true, "Quantity is required"],
     },
     pricePerDay: {
       type: Number,
@@ -40,10 +48,7 @@ const carSchema = new Schema(
       type: Boolean,
       default: true,
     },
-    maxPower: {
-      type: Number,
-      required: true,
-    },
+
     coverImage: {
       type: String,
       required: true,
