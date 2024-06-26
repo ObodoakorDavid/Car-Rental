@@ -25,7 +25,9 @@ async function bookCar(bookingDetails, userId) {
   });
 
   await userService.updateUser(userId, { $push: { booking: carBooking._id } });
-  await carService.updateCar(carId, { $inc: { quantity: -1 } });
+  await carService.updateCar(carId, {
+    $inc: { quantity: -bookingDetails.quantity },
+  });
 
   return { message: "Booking Successfull", booking: carBooking };
 }

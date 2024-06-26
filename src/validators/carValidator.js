@@ -88,19 +88,19 @@ export const validateCar = [
   body("pricePerDay")
     .exists()
     .withMessage("Please provide the price per day")
-    .isFloat({ min: 0 })
+    .isFloat({ min: 1 })
     .withMessage("Price should be higher than 0"),
 
   body("maxPower")
     .exists()
     .withMessage("Please provide the max power for this car")
-    .isFloat({ min: 0 })
+    .isFloat({ min: 1 })
     .withMessage("Max Power should be a positive number"),
 
   body("quantity")
     .exists()
     .withMessage("Please provide the quantity for this car")
-    .isFloat({ min: 0 })
+    .isFloat({ min: 1 })
     .withMessage("Quantity should be above 0"),
 
   handleValidationErrors,

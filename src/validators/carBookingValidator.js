@@ -42,6 +42,14 @@ export const validateCarBooking = [
 
   body("duration").exists().withMessage("Duration is required"),
 
+  body("quantity")
+    .exists()
+    .withMessage("Please provide a quantity")
+    .notEmpty()
+    .withMessage("quantity can't be empty")
+    .isInt({ min: 1 })
+    .withMessage("quantity must be a positive integer"),
+
   body("address")
     .exists()
     .withMessage("Address is required")
