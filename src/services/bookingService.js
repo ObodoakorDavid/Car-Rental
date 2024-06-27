@@ -206,8 +206,6 @@ async function updateCarBooking(bookingId, updatedDetails = {}) {
 
   const { booking: carBooking } = await getSingleCarBooking(bookingId);
 
-  console.log(carBooking.driverNeeded && !driverId);
-
   // Request for driverId to approve
   if (status.toLowerCase() === STATUS.APPROVED) {
     if (carBooking.driverNeeded && !driverId) {
@@ -243,7 +241,9 @@ async function updateCarBooking(bookingId, updatedDetails = {}) {
     status.toLowerCase() === STATUS.COMPLETED ||
     status.toLowerCase() === STATUS.REJECTED
   ) {
-    await carService.updateCar(updatedCarBooking.car, { isAvailable: true });
+    await carService.updateCar(updatedCarBooking.car, {
+      $inc: { quantity: carBooking.quantity },
+    });
 
     if (updatedCarBooking.driverNeeded && updateCarBooking?.driver) {
       await driverService.updateDriver(updatedCarBooking.driver, {

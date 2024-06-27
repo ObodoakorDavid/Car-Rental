@@ -6,28 +6,32 @@ const carBookingSchema = new Schema(
     user: {
       type: mongoose.Types.ObjectId,
       ref: "UserProfile",
-      required: true,
+      required: [true, "User is required"],
     },
     car: {
       type: mongoose.Types.ObjectId,
       ref: "Car",
-      required: true,
+      required: [true, "Car is required"],
     },
     pickUpDate: {
       type: String,
-      required: true,
+      required: [true, "PickUpDate is required"],
     },
     pickUpTime: {
       type: String,
-      required: true,
+      required: [true, "PickUpTime is required"],
     },
     duration: {
       type: String,
-      required: true,
+      required: [true, "Duration is required"],
     },
     address: {
       type: String,
-      required: true,
+      required: [true, "Address is required"],
+    },
+    quantity: {
+      type: Number,
+      required: [true, "Quantity is required"],
     },
     withinLagos: {
       type: Boolean,
