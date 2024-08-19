@@ -20,7 +20,7 @@ async function getCurrentPrice(name) {
     .exec();
 
   if (!price) {
-    throw customError(400, `No Price available for ${name}`);
+    throw customError(503, `Admin has not set a price for ${name}`);
   }
 
   return price.value;
