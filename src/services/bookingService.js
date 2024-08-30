@@ -47,10 +47,25 @@ async function getAllCarBookings(query = {}) {
     totalCount: 0,
   };
 
+  const populateOptions = [
+    {
+      path: "user",
+      select: "userId",
+      populate: {
+        path: "userId",
+        select: "firstName lastName",
+      },
+    },
+    {
+      path: "car",
+      select: "-createdAt -updatedAt -__v",
+    },
+  ];
+
   if (page) {
     const skip = page ? (page - 1) * perPage : 0;
     const carBookings = await CarBooking.find(searchQuery)
-      .populate({ path: "user" })
+      .populate(populateOptions)
       .skip(skip)
       .limit(perPage)
       .sort({ createdAt: -1 });
@@ -67,21 +82,6 @@ async function getAllCarBookings(query = {}) {
       ...stats,
     };
   }
-
-  const populateOptions = [
-    {
-      path: "user",
-      select: "userId",
-      populate: {
-        path: "userId",
-        select: "firstName lastName",
-      },
-    },
-    {
-      path: "car",
-      select: "-createdAt -updatedAt -__v",
-    },
-  ];
 
   const carBookings = await CarBooking.find(searchQuery)
     .populate(populateOptions)
